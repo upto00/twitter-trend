@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '0 * * * *'
 
+env:
+  PYTHONHTTPSVERIFY: '0'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,10 +26,10 @@ jobs:
           pip install snscrape certifi
 
       - name: Scrape tweets
-        shell: bash
         run: |
-          # Use certifi's CA bundle for SSL
-          export SSL_CERT_FILE="$(python -m certifi)"
+          # Disable SSL verification and set certifi bundle
+          export REQUESTS_CA_BUNDLE=$(python -c "import certifi; print(certifi.where())")
+          export PYTHONHTTPSVERIFY=0
           python get_tweets.py
 
       - name: Commit tweets
