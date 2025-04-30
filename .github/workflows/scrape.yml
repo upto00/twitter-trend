@@ -1,6 +1,7 @@
 name: Scrape Twitter Trends
 
 on:
+  workflow_dispatch: {}   # 手動実行トリガー
   schedule:
     - cron: '0 * * * *'  # 毎時0分に実行
 
@@ -9,25 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Setup Python 3.11
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install snscrape
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install snscrape
 
-    - name: Scrape tweets
-      run: python get_tweets.py
+      - name: Scrape tweets
+        run: python get_tweets.py
 
-    - name: Commit tweets
-      run: |
-        git config user.name 'github-actions[bot]'
-        git config user.email 'github-actions[bot]@users.noreply.github.com'
-        git add tweets.md
-        git diff --cached --quiet || git commit -m "Update tweets"
-        git push
+      - name: Commit tweets
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add tweets.md
+          git diff --cached --quiet || git commit -m "Update tweets"
+          git push
